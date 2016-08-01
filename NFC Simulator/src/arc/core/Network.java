@@ -1,6 +1,5 @@
 package arc.core;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import edu.uci.ics.jung.graph.DirectedSparseGraph;

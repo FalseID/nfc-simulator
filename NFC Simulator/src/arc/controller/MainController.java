@@ -3,13 +3,6 @@ package arc.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
-
-
-
-
-
-
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import arc.model.MainModel;
 import javafx.application.Platform;
@@ -20,12 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 public class MainController implements Initializable{

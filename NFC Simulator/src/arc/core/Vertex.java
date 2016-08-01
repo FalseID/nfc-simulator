@@ -18,14 +18,14 @@ public class Vertex {
 	}
 	
 	public Vertex(){
-		int nextid = this.NextId.incrementAndGet();
+		int nextid = Vertex.NextId.incrementAndGet();
 		this.label=""+nextid;
 		this.id = nextid;
 	 }
 
     public Vertex(String label){
 		this.label=label;
-		this.id = this.NextId.incrementAndGet();
+		this.id = Vertex.NextId.incrementAndGet();
     }
 
     @Override
