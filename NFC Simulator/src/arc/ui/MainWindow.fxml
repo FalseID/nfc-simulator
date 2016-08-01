@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<SplitPane fx:id="root_pane" dividerPositions="0.19899665551839466" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="400.0" prefHeight="500.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arc.controller.MainController">
+  <items>
+    <AnchorPane pickOnBounds="false" prefHeight="498.0" prefWidth="149.0" scaleShape="false" SplitPane.resizableWithParent="false">
+         <children>
+            <MenuBar layoutY="-3.0" prefHeight="28.0" prefWidth="135.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem fx:id="quit_button" mnemonicParsing="false" text="Quit" />
+                    <MenuItem mnemonicParsing="false" text="Save" />
+                    <MenuItem mnemonicParsing="false" text="Load" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit" />
+                <Menu mnemonicParsing="false" text="Help" />
+              </menus>
+            </MenuBar>
+            <ToggleButton fx:id="picking_button" layoutY="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Picking Mode">
+               <toggleGroup>
+                  <ToggleGroup fx:id="mode_group" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="editing_button" layoutY="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Editing Mode" toggleGroup="$mode_group" />
+            <ToggleButton fx:id="transforming_button" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" selected="true" text="Transforming Mode" toggleGroup="$mode_group" />
+         </children></AnchorPane>
+    <AnchorPane fx:id="visual_pane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="598.0" prefWidth="518.0">
+         <children>
+            <SwingNode id="visual_node" fx:id="visual_node" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>
