@@ -1,9 +1,10 @@
 # nfc-simulator
 Simulator for various network function computation scenarios, made in conjunction with my thesis related to network function computation.
+Project is in very early stages.
 
-Current features:
--Basic JavaFX UI.
--Graph drawing and editing.
+Current features include:
+Basic JavaFX UI.
+Graph drawing and editing.
 
 How to Use:
 To create a graph, click "Editing mode" to enter graph editing mode. Left-click will create a vertex, right-click will open a context-menu with additional options. Edges can be made with a simple click and drag method on vertices or by selecting "Picking mode"
