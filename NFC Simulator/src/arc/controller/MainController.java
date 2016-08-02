@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
-import arc.model.MainModel;
+import arc.model.NetworkModel;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +19,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 
 public class MainController implements Initializable{
-	private static MainModel mainmodel;
+	private static NetworkModel mainmodel;
 	private static Visualizer visualizer;
 	@FXML //  fx:id="root_pane"
 	private SplitPane root_pane;
@@ -40,7 +40,7 @@ public class MainController implements Initializable{
 	 * Initalizes the main model.
 	 **/
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		mainmodel = new MainModel();
+		mainmodel = new NetworkModel();
 		visualizer = new Visualizer(mainmodel, this);
 		visual_node.setContent(visualizer.getVisualization());
 		

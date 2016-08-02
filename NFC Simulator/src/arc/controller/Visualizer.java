@@ -1,6 +1,6 @@
 package arc.controller;
 
-import arc.model.MainModel;
+import arc.model.NetworkModel;
 
 import java.awt.Dimension;
 
@@ -25,7 +25,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
  *
  */
 public class Visualizer {
-	private static MainModel mainmodel;
+	private static NetworkModel mainmodel;
 	private static MainController controller;
 	private static Supplier <Vertex> vertexFactory;
 	private static Supplier<Edge> edgeFactory;
@@ -35,7 +35,7 @@ public class Visualizer {
 	
 	
 	
-	public Visualizer(MainModel mainmodel, MainController controller){
+	public Visualizer(NetworkModel mainmodel, MainController controller){
 		super();
 		Visualizer.mainmodel = mainmodel;
 		Visualizer.controller = controller;

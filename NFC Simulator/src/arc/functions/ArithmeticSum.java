@@ -6,6 +6,12 @@ import java.util.HashSet;
 import arc.core.Source;
 import arc.core.Vertex;
 
+/***
+ * A self-explanatory function that simply computes the sum of its arguments.
+ * It requires an acyclic, multirooted tree graph in order to be computable in the network.
+ * @author Janar
+ *
+ */
 public class ArithmeticSum extends TargetFunction {
 	
 	public ArithmeticSum() {
@@ -20,7 +26,6 @@ public class ArithmeticSum extends TargetFunction {
 		return sum;
 	}
 
-	@Override
 	public int direct_compute(HashSet<Source> sources) {
 		int sum = 0;
 		for (Source s : sources){

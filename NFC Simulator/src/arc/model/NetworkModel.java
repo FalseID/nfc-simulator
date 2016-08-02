@@ -1,24 +1,16 @@
 package arc.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-
-import arc.core.Edge;
 import arc.core.Network;
-import arc.core.Sink;
-import arc.core.Source;
-import arc.core.Vertex;
 import arc.functions.ArithmeticSum;
 
 /**
  * We save and load objects from a file.
  */
-public class MainModel {
-	//Model keeps track of available networks.
+public class NetworkModel {
+	//Model keeps track of our current computation network.
 	private Network current_network;
 	
-	public MainModel(){
+	public NetworkModel(){
 		super();
 	    this.current_network= new Network(new ArithmeticSum());
 	}
