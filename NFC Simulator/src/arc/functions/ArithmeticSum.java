@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import arc.core.Source;
-import arc.core.Vertex;
 
 /***
  * A self-explanatory function that simply computes the sum of its arguments.

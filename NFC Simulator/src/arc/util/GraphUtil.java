@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import arc.core.Edge;
 import arc.core.Network;
 import arc.core.Sink;
@@ -17,7 +18,7 @@ public class GraphUtil {
 	/**Generates a random network with specified number of nodes and a minimum 
 	and maximum path length from sources to receivers. Messages are all zero.**/
 	public static Network GenerateNetwork(int source_count, int receiver_count, int intermediaries_count, int min_cap, int max_cap){
-		Network genNetwork = new Network(new ArithmeticSum());
+		Network genNetwork = new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
 		
 		ArrayList<Source> sources = new ArrayList<Source>();
 		ArrayList<Sink> receivers = new ArrayList<Sink>();
@@ -38,7 +39,7 @@ public class GraphUtil {
 		Nodes.addAll(receivers);
 		Nodes.addAll(intermediaries);
 		*/
-		for(Vertex node1: intermediaries){
+		/*for(Vertex node1: intermediaries){
 			for(Vertex node2: intermediaries){
 				if(!node1.equals(node2) && Math.random() < 0.25){
 					int c = min_cap + (int)(Math.random() * max_cap);
@@ -46,7 +47,7 @@ public class GraphUtil {
 				}
 			}
 		
-		}
+		}*/
 		
 		return genNetwork;
 	}
@@ -55,8 +56,8 @@ public class GraphUtil {
 		 * 
 		 */
 		public static Network Acycler(Network network){
-			for (Vertex a : network.getVertices()){
-				for (Vertex b : network.getVertices()){
+			for (Vertex a : network.getGraph().getVertices()){
+				for (Vertex b : network.getGraph().getVertices()){
 					if(isPath(network, a, b) && isPath(network, b, a)){
 						System.out.println("Removed a path " + a.getLabel()+ "->" + b.getLabel());
 						labelCyclePath(network,a,b);
@@ -75,7 +76,7 @@ public class GraphUtil {
 	 * @return
 	 */
 		public static boolean isPath(Network network, Vertex a, Vertex b){
-			for(Vertex successor: network.getSuccessors(a)){
+			for(Vertex successor: network.getGraph().getSuccessors(a)){
 				if(successor.equals(b)){
 					return true;
 				}
@@ -94,9 +95,9 @@ public class GraphUtil {
 		 * @param b
 		 */
 		public static void labelCyclePath(Network network, Vertex a, Vertex b){
-			for(Vertex successor: network.getSuccessors(a)){
+			for(Vertex successor: network.getGraph().getSuccessors(a)){
 				if(successor.equals(b)){
-					network.findEdge(a, b).setLabel("R");
+					network.getGraph().findEdge(a, b).setLabel("R");
 					return;
 				}
 				else{
@@ -111,10 +112,10 @@ public class GraphUtil {
 		 */
 		public static void removeLabeledEdges(Network network){
 			Collection<Edge> edges = new ArrayList<Edge>();
-					edges.addAll(network.getEdges());
+					edges.addAll(network.getGraph().getEdges());
 			for (Edge e : edges){
 				if(e.getLabel().equals("R")){
-					network.removeEdge(e);
+					network.getGraph().removeEdge(e);
 				}
 			}
 		}
@@ -129,25 +130,25 @@ public class GraphUtil {
 	    		for (Vertex v : encoders){
 	    			//Condition 1
 	    			if (v instanceof Source){ 
-	    				for (Vertex vv : MyNetwork.getSuccessors(v)){
+	    				for (Vertex vv : MyNetwork.getGraph().getSuccessors(v)){
 	    					vv.setMessage(v.getMessage());
 	    				}
 	    			}
 	    			//Condition 2
-	    			else if (MyNetwork.getPredecessorCount(v)==1){ 
-	    				for (Vertex vv : MyNetwork.getSuccessors(v)){
-	    					vv.setMessage(MyNetwork.getPredecessors(v).iterator().next().getMessage());
+	    			else if (MyNetwork.getGraph().getPredecessorCount(v)==1){ 
+	    				for (Vertex vv : MyNetwork.getGraph().getSuccessors(v)){
+	    					vv.setMessage(MyNetwork.getGraph().getPredecessors(v).iterator().next().getMessage());
 	    				}
 	    			}
 	    			//Condition 3
 	    			else {
 	    				//Find the targetfunction of all predecessor messages.
 	    				ArrayList<Integer> integer_list = new ArrayList<Integer>();
-	    				for (Vertex pre_v : MyNetwork.getPredecessors(v)){
+	    				for (Vertex pre_v : MyNetwork.getGraph().getPredecessors(v)){
 	    					integer_list.add(pre_v.getMessage());
 	    				}
 	    				int code = MyNetwork.getTargetFunction().compute(integer_list);
-	    				for (Vertex vv : MyNetwork.getSuccessors(v)){
+	    				for (Vertex vv : MyNetwork.getGraph().getSuccessors(v)){
 	    					
 	    					vv.setMessage(code);
 	    				}
@@ -156,7 +157,7 @@ public class GraphUtil {
 	    		//Cycle part
 	    		Set<Vertex> new_encoders = new HashSet<Vertex>();
 	    		for (Vertex v : encoders){
-	    			new_encoders.addAll(MyNetwork.getSuccessors(v));
+	    			new_encoders.addAll(MyNetwork.getGraph().getSuccessors(v));
 	    		}
 	    		encoders.clear();
 	    		encoders.addAll(new_encoders);
