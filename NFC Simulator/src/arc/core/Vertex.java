@@ -7,6 +7,8 @@ public class Vertex {
 	protected int id;
     protected String label;
     private int message;
+    private double x;
+    private double y;
     
     
     public int getMessage() {
@@ -27,7 +29,10 @@ public class Vertex {
 		this.label=label;
 		this.id = Vertex.NextId.incrementAndGet();
     }
-
+    
+    public static void resetNextId(){
+    	Vertex.NextId.set(0);
+    }
     @Override
     public String toString() {
 	return label;
@@ -40,4 +45,20 @@ public class Vertex {
     public void setLabel(String label) {
         this.label = label;
     }
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
 }

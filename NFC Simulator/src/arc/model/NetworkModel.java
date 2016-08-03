@@ -21,11 +21,11 @@ import edu.uci.ics.jung.io.graphml.GraphMLReader2;
 import edu.uci.ics.jung.io.graphml.GraphMetadata;
 import edu.uci.ics.jung.io.graphml.HyperEdgeMetadata;
 import edu.uci.ics.jung.io.graphml.NodeMetadata;
-import arc.controller.VisualizationController;
 import arc.core.Edge;
 import arc.core.Network;
 import arc.core.Vertex;
 import arc.functions.ArithmeticSum;
+import arc.ui.VisualizationView;
 
 
 /**
@@ -33,6 +33,7 @@ import arc.functions.ArithmeticSum;
  */
 public class NetworkModel {
 	private Network current_network;
+	private VisualizationView visual_view;
 	private static final GraphMLWriter<Vertex, Edge> graphWriter = new GraphMLWriter<Vertex, Edge>();
 	private static final Supplier <Vertex> vertexFactory = new Supplier<Vertex>() {
         public Vertex get() {
@@ -48,9 +49,7 @@ public class NetworkModel {
 	public NetworkModel(){
 		super();
 	    this.current_network= new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
-	    
-	    
-        
+	    this.visual_view = new VisualizationView(this.current_network, vertexFactory, edgeFactory);
 	}
 
 	public Network getCurrent_network() {
@@ -104,16 +103,30 @@ public class NetworkModel {
 		graphWriter.save(this.current_network.getGraph(), out);
 		
 	}
-	
+	/**
+	 * Clear model and visualization and reset Vertex id counter.
+	 */
 	public void clear(){
+		//Clear the model and then the view.
+		//We reset the AtomicInteger for vertex ids back to zero.
+		Vertex.resetNextId();
 		this.current_network = new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
+		update();
+	}
+	
+	/**
+	 * update visualization.
+	 */
+	public void update(){
+		this.visual_view = new VisualizationView(this.current_network, vertexFactory, edgeFactory);
 	}
 	
 	public void load(File graph_file, final AbstractLayout layout) throws IOException, GraphIOException {
 		if(graph_file==null){
 			return;
 		}
-		System.out.println("loading");
+		
+		clear();
 		
 		BufferedReader fileReader = new BufferedReader(new FileReader(graph_file));
 		
@@ -132,8 +145,8 @@ public class NetworkModel {
 		= new Function<NodeMetadata, Vertex>() {
 		    public Vertex apply(NodeMetadata metadata) {
 		        Vertex v = vertexFactory.get();
-		        //v.setX(Double.parseDouble(metadata.getProperty("x")));
-		        //v.setY(Double.parseDouble(metadata.getProperty("y")));
+		        v.setX(Double.parseDouble(metadata.getProperty("x")));
+		        v.setY(Double.parseDouble(metadata.getProperty("y")));
 		        return v;
 		    }
 		};
@@ -162,8 +175,11 @@ public class NetworkModel {
 		       (fileReader, graphFunction, vertexFunction,
 		        edgeFunction, hyperEdgeFunction);
 		 this.current_network.setGraph((DirectedSparseGraph<Vertex, Edge>) graphReader.readGraph());
-		 System.out.println(current_network.toString());
-		 
+		 update();
+	}
+
+	public VisualizationView getVisual_view() {
+		return visual_view;
 	}
 
 }

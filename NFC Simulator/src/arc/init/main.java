@@ -2,7 +2,6 @@ package arc.init;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import arc.controller.VisualizationController;
 import arc.core.Network;
 import arc.ui.MainWindow;
 

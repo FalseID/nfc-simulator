@@ -20,7 +20,10 @@
                     <MenuItem fx:id="quit_button" mnemonicParsing="false" text="Quit" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit" />
+                <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem fx:id="clear_button" mnemonicParsing="false" text="Clear" />
+                     </items></Menu>
                 <Menu mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
