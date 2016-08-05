@@ -3,6 +3,8 @@ package arc.ui;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -25,15 +27,28 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 /**
  * Creates the swing component containing the network visualization.
+ * This view also serves as a controller.
  * @author Janar
  *
  */
-public class VisualizationView {
-	private final Layout<Integer, String> layout;
-	private final VisualizationViewer<Integer,String> vv;
+public class VisualizationView implements PropertyChangeListener {
+	private Layout<Integer, String> layout;
+	private VisualizationViewer<Integer,String> vv;
 	private EditingModalGraphMouse<Integer, String> modalMouse;
+	/*
+	 * Following are required for edge and vertex creation. They are received from the model and should never change.
+	 */
+	private final Supplier vertexFactory;
+	private final Supplier edgeFactory;
 	
-	public VisualizationView(Network network, Supplier VertexFactory, Supplier EdgeFactory){
+	public VisualizationView(Network network, Supplier vertexFactory, Supplier edgeFactory){
+		super();
+		this.vertexFactory = vertexFactory;
+		this.edgeFactory = edgeFactory;
+		initialize(network);
+	}
+	
+	public void initialize(Network network){
 		this.layout = new StaticLayout(network.getGraph(), new Function<Vertex, Point2D>(){
 			//This layout has a Function for associating vertex coordinates with actual points on the graph.
 			public Point2D apply(Vertex v) {
@@ -56,8 +71,8 @@ public class VisualizationView {
 		refresh();
 		
 		this.modalMouse = new EditingModalGraphMouse(vv.getRenderContext(), 
-				 VertexFactory, 
-				 EdgeFactory);
+				 this.vertexFactory, 
+				 this.edgeFactory);
 		this.modalMouse.setMode(Mode.TRANSFORMING);
 		this.vv.setGraphMouse(this.modalMouse);
 		this.vv.addKeyListener(this.modalMouse.getModeKeyListener());
@@ -86,6 +101,18 @@ public class VisualizationView {
 
 	public Layout<Integer, String> getLayout() {
 		return layout;
+	}
+	
+	/**
+	 * Listens to network changes in the model.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		String propName = evt.getPropertyName();
+        Object newNetwork = evt.getNewValue();
+        if(propName.equals("network")){
+        	initialize((Network)newNetwork);
+		}
+		
 	}
 
 }

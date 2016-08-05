@@ -1,5 +1,6 @@
 package arc.model;
 
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.swing.event.SwingPropertyChangeSupport;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -32,8 +35,9 @@ import arc.ui.VisualizationView;
  * Keeps track of our computation network. Also manages saving and loading graphs.
  */
 public class NetworkModel {
+	private SwingPropertyChangeSupport propChange;
 	private Network current_network;
-	private VisualizationView visual_view;
+	private File current_file; //This is just for keeping track which file is currently open.
 	private static final GraphMLWriter<Vertex, Edge> graphWriter = new GraphMLWriter<Vertex, Edge>();
 	private static final Supplier <Vertex> vertexFactory = new Supplier<Vertex>() {
         public Vertex get() {
@@ -49,20 +53,17 @@ public class NetworkModel {
 	public NetworkModel(){
 		super();
 	    this.current_network= new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
-	    this.visual_view = new VisualizationView(this.current_network, vertexFactory, edgeFactory);
+	    this.propChange = new SwingPropertyChangeSupport(this);
 	}
+	
+	 public void addListener(PropertyChangeListener prop) {
+	        propChange.addPropertyChangeListener(prop);
+	 }
 
 	public Network getCurrent_network() {
 		return current_network;
 	}
-
-
-	public void setCurrent_network(Network current_network) {
-		this.current_network = current_network;
-	}
-
-
-
+	
 	@Override
 	public String toString() {
 		return "MainModel [current_network=" + current_network + "]";
@@ -76,7 +77,7 @@ public class NetworkModel {
 		return edgeFactory;
 	}
 
-	public void saveAs(File graph_file, final AbstractLayout layout) throws IOException {
+	public void save(File graph_file, final AbstractLayout layout) throws IOException {
 		if(graph_file==null){
 			return;
 		}
@@ -101,6 +102,7 @@ public class NetworkModel {
 			);
 		
 		graphWriter.save(this.current_network.getGraph(), out);
+		this.setCurrent_file(graph_file);
 		
 	}
 	/**
@@ -110,22 +112,13 @@ public class NetworkModel {
 		//Clear the model and then the view.
 		//We reset the AtomicInteger for vertex ids back to zero.
 		Vertex.resetNextId();
-		this.current_network = new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
-		update();
+		this.setCurrent_network(new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>()));
+		
 	}
-	
-	/**
-	 * update visualization.
-	 */
-	public void update(){
-		this.visual_view = new VisualizationView(this.current_network, vertexFactory, edgeFactory);
-	}
-	
 	public void load(File graph_file, final AbstractLayout layout) throws IOException, GraphIOException {
 		if(graph_file==null){
 			return;
 		}
-		
 		clear();
 		
 		BufferedReader fileReader = new BufferedReader(new FileReader(graph_file));
@@ -174,12 +167,22 @@ public class NetworkModel {
 		 GraphMLReader2<Graph<Vertex, Edge>, Vertex, Edge>
 		       (fileReader, graphFunction, vertexFunction,
 		        edgeFunction, hyperEdgeFunction);
-		 this.current_network.setGraph((DirectedSparseGraph<Vertex, Edge>) graphReader.readGraph());
-		 update();
+		 this.setCurrent_file(graph_file);
+		 this.setCurrent_network(new Network(new ArithmeticSum(), (DirectedSparseGraph<Vertex, Edge>) graphReader.readGraph()));
 	}
 
-	public VisualizationView getVisual_view() {
-		return visual_view;
+	public void setCurrent_network(Network new_network) {
+		//Notify listeners that network has changed.
+		propChange.firePropertyChange("network", this.current_network, new_network);
+		this.current_network = new_network;
+	}
+
+	public File getCurrent_file() {
+		return current_file;
+	}
+
+	public void setCurrent_file(File current_file) {
+		this.current_file = current_file;
 	}
 
 }

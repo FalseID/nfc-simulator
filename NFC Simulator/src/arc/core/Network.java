@@ -1,16 +1,10 @@
 package arc.core;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import arc.functions.TargetFunction;
 
-public class Network implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Network{
 	private TargetFunction targetFunction;
 	private DirectedSparseGraph<Vertex, Edge> graph;
     

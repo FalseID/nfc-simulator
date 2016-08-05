@@ -9,6 +9,7 @@ import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import arc.model.NetworkModel;
+import arc.ui.VisualizationView;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,7 +26,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
 public class MainController implements Initializable{
-	private static final NetworkModel mainmodel = new NetworkModel();
+	private final NetworkModel mainmodel = new NetworkModel();
+	private final VisualizationView visual_view = new VisualizationView(mainmodel.getCurrent_network(),
+			mainmodel.getVertexFactory(), mainmodel.getEdgeFactory());
 	@FXML
 	private SplitPane root_pane;
 	@FXML //  fx:id="visual_node"
@@ -57,17 +60,19 @@ public class MainController implements Initializable{
 	 **/
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//Adding visual_controller's visualization view to our swing node.
-		updateVisual();
+		update();
+		//Make visualization view listen to mainmodel.
+		mainmodel.addListener(visual_view);
 		
 		
 		root_pane.widthProperty().addListener(new ChangeListener<Number>() {
 		    public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-		    	mainmodel.getVisual_view().refresh();
+		    	visual_view.refresh();
 		    }
 		});
 		root_pane.heightProperty().addListener(new ChangeListener<Number>() {
 		    public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-		    	mainmodel.getVisual_view().refresh();
+		    	visual_view.refresh();
 		    }
 		});
 		
@@ -82,28 +87,26 @@ public class MainController implements Initializable{
 
             public void handle(ActionEvent event) {
             	mainmodel.clear();
-            	updateVisual();
+            	update();
+            }
+        });
+		
+		save_button.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	if(mainmodel.getCurrent_file()==null){
+            		saveWithChooser();
+            	}else{
+            		saveWithoutChooser(mainmodel.getCurrent_file());
+            	}
+            	
             }
         });
 		
 		save_as_button.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-            	FileChooser fileChooser = new FileChooser();
-            	fileChooser.setTitle("Save Graph File");
-            	File workingDirectory = new File(System.getProperty("user.dir"));
-            	fileChooser.setInitialDirectory(workingDirectory);
-            	fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
-            	File graph_file = fileChooser.showSaveDialog(root_pane.getScene().getWindow());
-            	
-            	try {
-					mainmodel.saveAs(graph_file, ((AbstractLayout)mainmodel.getVisual_view().getLayout()));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	
-            	
+            	saveWithChooser();
             }
         });
 		
@@ -111,7 +114,7 @@ public class MainController implements Initializable{
 
             public void handle(ActionEvent event) {
             	FileChooser fileChooser = new FileChooser();
-            	fileChooser.setTitle("Open Graph File");
+            	fileChooser.setTitle("Open Graph .xml File");
             	File workingDirectory = new File(System.getProperty("user.dir"));
             	fileChooser.setInitialDirectory(workingDirectory);
             	fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
@@ -119,7 +122,7 @@ public class MainController implements Initializable{
             	if(graph_file == null) return;
             	try {
             		mainmodel.clear();
-					mainmodel.load(graph_file, ((AbstractLayout)mainmodel.getVisual_view().getLayout()));
+					mainmodel.load(graph_file, ((AbstractLayout)visual_view.getLayout()));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -128,37 +131,30 @@ public class MainController implements Initializable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            	updateVisual();
+            	update();
             	
             	
-            }
-        });
-		
-		save_button.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event) {
-            	Platform.exit();
             }
         });
 		
 		picking_button.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-            	mainmodel.getVisual_view().setModalMouseMode(Mode.PICKING);
+            	visual_view.setModalMouseMode(Mode.PICKING);
             }
         });
 		
 		editing_button.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-            	mainmodel.getVisual_view().setModalMouseMode(Mode.EDITING);
+            	visual_view.setModalMouseMode(Mode.EDITING);
             }
         });
 		
 		transforming_button.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-            	mainmodel.getVisual_view().setModalMouseMode(Mode.TRANSFORMING);
+            	visual_view.setModalMouseMode(Mode.TRANSFORMING);
             }
         });
 		
@@ -167,9 +163,34 @@ public class MainController implements Initializable{
 	/**
 	 * Updates the swing node content and resets togglegroup selection.
 	 */
-	public void updateVisual(){
-		visual_node.setContent(mainmodel.getVisual_view().getVisualizationViewer());
+	public void update(){
+		visual_node.setContent(visual_view.getVisualizationViewer());
     	mode_group.selectToggle(transforming_button);
+	}
+	
+	private void saveWithChooser(){
+		FileChooser fileChooser = new FileChooser();
+    	fileChooser.setTitle("Save Graph File");
+    	File workingDirectory = new File(System.getProperty("user.dir"));
+    	fileChooser.setInitialDirectory(workingDirectory);
+    	fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
+    	File graph_file = fileChooser.showSaveDialog(root_pane.getScene().getWindow());
+    	
+    	try {
+			mainmodel.save(graph_file, ((AbstractLayout)visual_view.getLayout()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void saveWithoutChooser(File graph_file){
+    	try {
+			mainmodel.save(graph_file, ((AbstractLayout)visual_view.getLayout()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
