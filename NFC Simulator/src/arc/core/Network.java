@@ -22,6 +22,7 @@ public class Network{
 		this.targetFunction = targetFunction;
 	}
 	
+<<<<<<< HEAD
 	public String results() {
 		 String results = "";
 		int correct_result = this.getTargetFunction().direct_compute(this.getSources());
@@ -31,6 +32,19 @@ public class Network{
 			}
 			else{
 				results += s.getLabel() +":"+ Integer.toString(s.getInput()) + " Error, should be " + correct_result + "\n";
+=======
+	
+	
+	 public String results() {
+		 String results = "";
+		int correct_result = this.getTargetFunction().direct_compute(this.getSources());
+		for (Sink s : this.getSinks()){
+			if (s.getMessage() == correct_result){	
+				results += s.getLabel() +":"+ Integer.toString(s.getMessage()) + " Correct \n";
+			}
+			else{
+				results += s.getLabel() +":"+ Integer.toString(s.getMessage()) + " Error, should be " + correct_result + "\n";
+>>>>>>> branch 'master' of https://github.com/FalseID/nfc-simulator
 			}
 	    }
 		return results;

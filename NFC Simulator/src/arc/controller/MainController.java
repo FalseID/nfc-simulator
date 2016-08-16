@@ -28,6 +28,7 @@ import javafx.stage.FileChooser;
 public class MainController implements Initializable{
 	private final NetworkModel mainmodel = new NetworkModel();
 	private final VisualizationView visual_view = new VisualizationView(mainmodel.getCurrent_network(),
+<<<<<<< HEAD
 			mainmodel.getVertexFactory(), mainmodel.getEdgeFactory(), 
 			mainmodel.getSourceFactory(), mainmodel.getSinkFactory());
 	@FXML
@@ -112,6 +113,92 @@ public class MainController implements Initializable{
         });
 		
 		load_button.setOnAction(new EventHandler<ActionEvent>() {
+=======
+			mainmodel.getVertexFactory(), mainmodel.getEdgeFactory());
+	@FXML
+	private SplitPane root_pane;
+	@FXML //  fx:id="visual_node"
+	private SwingNode visual_node;
+	@FXML //  fx:id="visual_pane"
+	private AnchorPane visual_pane;
+	@FXML //  fx:id="quit_button"
+	private MenuItem quit_button;
+	@FXML //  fx:id="save_button"
+	private MenuItem save_button;
+	@FXML //  fx:id="save_as_button"
+	private MenuItem save_as_button;
+	@FXML //  fx:id="load_button"
+	private MenuItem load_button;
+	@FXML //  fx:id="clear_button"
+	private MenuItem clear_button;
+	@FXML //  fx:id="picking_button"
+	private ToggleButton picking_button;
+	@FXML //  fx:id="editing_button"
+	private ToggleButton editing_button;
+	@FXML //  fx:id="transforming_button"
+	private ToggleButton transforming_button;
+	@FXML //  fx:id="mode_group"
+	private ToggleGroup mode_group;
+	
+
+	/**Runs once all injections are complete.
+	 * Initalizes the main model.
+	 **/
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		//Adding visual_controller's visualization view to our swing node.
+		update();
+		//Make visualization view listen to mainmodel.
+		mainmodel.addListener(visual_view);
+		
+		
+		root_pane.widthProperty().addListener(new ChangeListener<Number>() {
+		    public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+		    	visual_view.refresh();
+		    }
+		});
+		root_pane.heightProperty().addListener(new ChangeListener<Number>() {
+		    public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+		    	visual_view.refresh();
+		    }
+		});
+		
+		quit_button.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	Platform.exit();
+            }
+        });
+		
+		clear_button.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	mainmodel.clear();
+            	update();
+            }
+        });
+		
+		save_button.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	if(mainmodel.getCurrent_file()==null){
+            		saveWithChooser();
+            	}else{
+            		saveWithoutChooser(mainmodel.getCurrent_file());
+            	}
+            	
+            }
+        });
+		
+		save_as_button.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	saveWithChooser();
+            }
+        });
+		
+		load_button.setOnAction(new EventHandler<ActionEvent>() {
+
+>>>>>>> branch 'master' of https://github.com/FalseID/nfc-simulator
             public void handle(ActionEvent event) {
             	FileChooser fileChooser = new FileChooser();
             	fileChooser.setTitle("Open Graph .xml File");

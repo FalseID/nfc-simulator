@@ -28,7 +28,11 @@ public class ArithmeticSum extends TargetFunction {
 	public int direct_compute(HashSet<Source> sources) {
 		int sum = 0;
 		for (Source s : sources){
+<<<<<<< HEAD
 			sum += s.getInput();
+=======
+			sum += s.getMessage();
+>>>>>>> branch 'master' of https://github.com/FalseID/nfc-simulator
 		}
 		return sum;
 	}
