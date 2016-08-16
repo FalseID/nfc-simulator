@@ -1,6 +1,5 @@
 package arc.core;
 
-<<<<<<< HEAD
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -25,13 +24,6 @@ public class Sink extends Vertex {
     @Override
     public String toString() {
     	return this.label;
-=======
-public class Sink extends Vertex {
-
-    public Sink(String label) {
-	super(label);
-	// TODO Auto-generated constructor stub
->>>>>>> branch 'master' of https://github.com/FalseID/nfc-simulator
     }
 
 }
