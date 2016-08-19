@@ -1,9 +1,18 @@
 package arc.ui.visualization;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import org.apache.commons.collections15.Transformer;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -42,6 +51,24 @@ public class VisualizationView implements PropertyChangeListener {
 	private final Supplier<Edge> edgeFactory;
 	private final Supplier<Source> sourceFactory;
 	private final Supplier<Sink> sinkFactory;
+	/*
+	 * The following specifies stylings for different vertex types.
+	 */
+	 private final Function<Vertex,Shape> shaper = new Function<Vertex,Shape>(){
+         public Shape apply(Vertex v){
+             Ellipse2D circle = new Ellipse2D.Double(-10, -10, 20, 20);
+             // in this case, the vertex is twice as large
+             if(v instanceof Sink) return new Rectangle.Double(-10, -10, 20, 20);
+             else return circle;
+         }
+     };
+     
+     private final Function<Vertex,Paint> painter = new Function<Vertex,Paint>(){
+         public Paint apply(Vertex v){
+             if(v instanceof Source || v instanceof Sink) return Color.WHITE;
+             else return Color.GRAY;
+         }
+     };
 	
 	public VisualizationView(Network network, Supplier<IntermediaryVertex> vertexFactory, 
 			Supplier<Edge> edgeFactory, Supplier<Source> sourceFactory, Supplier<Sink> sinkFactory){
@@ -70,7 +97,12 @@ public class VisualizationView implements PropertyChangeListener {
 	         = new CrossoverScalingControl();
 		visualizationViewerScalingControl.scale(vv, 1 / 1.1f, vv.getCenter());
 		vv.scaleToLayout(visualizationViewerScalingControl);
-		 
+		
+		//Set Vertex style settings.
+		vv.getRenderContext().setVertexShapeTransformer(shaper);
+		vv.getRenderContext().setVertexFillPaintTransformer(painter);
+		
+		//Set Labeller settings.
 		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
 		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
 		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);

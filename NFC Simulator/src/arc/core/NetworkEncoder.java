@@ -7,9 +7,14 @@ import java.util.Set;
 
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import arc.core.functions.ArithmeticSum;
-
-public class GraphUtil {
-		public static void encode(Network MyNetwork){
+/**
+ * Responsible for the network function computation. Simulates the act of computing
+ * in a network according to the greedy encoding methodology in my thesis.
+ * @author Janar
+ *
+ */
+public class NetworkEncoder {
+		public static String encode(Network MyNetwork){
 	    	Set<Vertex> encoders = new HashSet<Vertex>();
 	    	//We start at source nodes.
 	    	encoders.addAll(MyNetwork.getSources());
@@ -33,7 +38,7 @@ public class GraphUtil {
 	    			}
 	    			//Condition 3
 	    			//Encoder node may have many predecessors, so successors will receive the function of all
-	    			//encoder's inputs as their own input.
+	    			//encoders inputs as their own input.
 	    			else {
 	    				//Find the targetfunction of all predecessor messages.
 	    				ArrayList<Integer> integer_list = new ArrayList<Integer>();
@@ -42,7 +47,6 @@ public class GraphUtil {
 	    				}
 	    				int code = MyNetwork.getTargetFunction().compute(integer_list);
 	    				for (Vertex vv : MyNetwork.getSuccessors(v)){
-	    					
 	    					vv.setInput(code);
 	    				}
 	    			}
@@ -55,8 +59,9 @@ public class GraphUtil {
 	    		encoders.clear();
 	    		encoders.addAll(new_encoders);
 	    	}
-	    	System.out.println(MyNetwork.results());
 	    	//End of encoding proccess
+	    	return MyNetwork.results();
+	    	
 	    }
 	
 }

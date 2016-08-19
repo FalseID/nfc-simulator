@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
+import arc.core.NetworkEncoder;
 import arc.core.functions.ArithmeticSum;
 import arc.core.functions.TargetFunction;
 import arc.model.NetworkModel;
@@ -21,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
@@ -33,8 +35,8 @@ import javafx.stage.FileChooser;
 public class MainController implements Initializable{
 	private final NetworkModel mainmodel = new NetworkModel();
 	private final VisualizationView visual_view = new VisualizationView(mainmodel.getCurrent_network(),
-			mainmodel.getVertexFactory(), mainmodel.getEdgeFactory(), 
-			mainmodel.getSourceFactory(), mainmodel.getSinkFactory());
+			NetworkModel.getVertexFactory(), NetworkModel.getEdgeFactory(), 
+			NetworkModel.getSourceFactory(), NetworkModel.getSinkFactory());
 	@FXML
 	private SplitPane root_pane;
 	@FXML //  fx:id="visual_node"
@@ -61,12 +63,11 @@ public class MainController implements Initializable{
 	private ToggleGroup mode_group;
 	@FXML //  fx:id="choose_function_box"
 	private ChoiceBox<TargetFunction> choose_function_box;
-	@FXML //  fx:id="text_console"
-	private TextArea text_console;
+	@FXML //  fx:id="text_area"
+	private TextArea text_area;
+	@FXML //  fx:id="compute_button"
+	private Button compute_button;
 	
-	
-	
-
 	/**Runs once all injections are complete.
 	 * Initalizes the main model.
 	 **/
@@ -78,7 +79,7 @@ public class MainController implements Initializable{
 		//Adding items to choice box.
 		choose_function_box.setItems(FXCollections.observableArrayList(
 			    (TargetFunction)new ArithmeticSum()));
-		choose_function_box.getSelectionModel().selectFirst();
+		loadChoice();
 		
 		
 		root_pane.widthProperty().addListener(new ChangeListener<Number>() {
@@ -103,9 +104,7 @@ public class MainController implements Initializable{
 		clear_button.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-            	mainmodel.clear();
-            	choose_function_box.getSelectionModel().selectFirst();
-            	update_visual();
+            	clearAll();
             }
         });
 		
@@ -149,8 +148,6 @@ public class MainController implements Initializable{
 				}
             	loadChoice();
             	update_visual();
-            	
-            	
             }
         });
 		
@@ -178,6 +175,14 @@ public class MainController implements Initializable{
 		choose_function_box.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TargetFunction>() {
             public void changed(ObservableValue ov, TargetFunction function, TargetFunction new_function) {
             	mainmodel.getCurrent_network().setTargetFunction(new_function);
+            }
+        });
+		
+		compute_button.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+            	String results = NetworkEncoder.encode(mainmodel.getCurrent_network());
+            	text_area.clear();
+            	text_area.setText(results);
             }
         });
 		
@@ -221,6 +226,11 @@ public class MainController implements Initializable{
 		choose_function_box.getSelectionModel().select(mainmodel.getCurrent_network().getTargetFunction());
 	}
 	
+	private void clearAll(){
+		mainmodel.clear();
+    	loadChoice();
+    	update_visual();
+	}
 
 	public AnchorPane getVisual_pane() {
 		return visual_pane;

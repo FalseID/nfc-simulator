@@ -50,8 +50,8 @@
                            <children>
                               <ChoiceBox fx:id="choose_function_box" layoutY="27.0" prefHeight="25.0" prefWidth="135.0" />
                               <Text layoutX="7.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target Function:" wrappingWidth="135.0" />
-                              <Button layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Compute" />
-                              <TextArea fx:id="text_console" layoutY="77.0" prefHeight="200.0" prefWidth="135.0" />
+                              <Button fx:id="compute_button" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Compute" />
+                              <TextArea fx:id="text_area" editable="false" layoutY="77.0" prefHeight="200.0" prefWidth="135.0" />
                            </children></AnchorPane>
                   </content>
                 </Tab>
