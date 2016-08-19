@@ -16,7 +16,9 @@ import com.google.common.base.Supplier;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.Hypergraph;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.io.GraphMLWriter;
 import edu.uci.ics.jung.io.graphml.EdgeMetadata;
@@ -30,8 +32,8 @@ import arc.core.Network;
 import arc.core.Sink;
 import arc.core.Source;
 import arc.core.Vertex;
-import arc.functions.ArithmeticSum;
-import arc.ui.VisualizationView;
+import arc.core.functions.ArithmeticSum;
+import arc.ui.visualization.VisualizationView;
 
 
 /**
@@ -40,13 +42,17 @@ import arc.ui.VisualizationView;
 public class NetworkModel {
 	private SwingPropertyChangeSupport propChange;
 	private Network current_network;
-	private File current_file; //This is just for keeping track which file is currently open.
+	private File current_file; //This is for keeping track which file is currently open.
 	private static final GraphMLWriter<Vertex, Edge> graphWriter = new GraphMLWriter<Vertex, Edge>();
 	private static final Supplier <IntermediaryVertex> vertexFactory = new Supplier<IntermediaryVertex>() {
         public IntermediaryVertex get() {
             return new IntermediaryVertex();
         }
     };
+    /**
+     * These suppliers provide methods for the controller/view hybrid VisualizationView 
+     * to create its own elements of the graph with ModalMouse while updating our model here.
+     */
 	private static Supplier <Edge> edgeFactory = new Supplier<Edge>() {
         public Edge get() {
             return new Edge(1);
@@ -65,7 +71,7 @@ public class NetworkModel {
 	
 	public NetworkModel(){
 		super();
-	    this.current_network= new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>());
+	    this.current_network= new Network(new ArithmeticSum());
 	    this.propChange = new SwingPropertyChangeSupport(this);
 	}
 	
@@ -97,6 +103,13 @@ public class NetworkModel {
 		
 		
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(graph_file)));
+		graphWriter.addGraphData("Target function", null, "0",
+			    new Function<Hypergraph<Vertex, Edge>, String>() {
+			        public String apply(Hypergraph g) {
+			            return ((Network)g).getTargetFunction().toString();
+			        }
+			    }
+			);
 		
 		graphWriter.addVertexData("x", null, "0",
 			    new Function<Vertex, String>() {
@@ -122,7 +135,7 @@ public class NetworkModel {
 			    }
 			);
 		
-		graphWriter.save(this.current_network.getGraph(), out);
+		graphWriter.save(this.current_network, out);
 		this.setCurrent_file(graph_file);
 		
 	}
@@ -135,7 +148,7 @@ public class NetworkModel {
 		IntermediaryVertex.resetNextId();
 		Source.resetNextId();
 		Sink.resetNextId();
-		this.setCurrent_network(new Network(new ArithmeticSum(), new DirectedSparseGraph<Vertex, Edge>()));
+		this.setCurrent_network(new Network(new ArithmeticSum()));
 		
 	}
 	public void load(File graph_file, final AbstractLayout layout) throws IOException, GraphIOException {
@@ -152,7 +165,12 @@ public class NetworkModel {
 		      Graph<Vertex, Edge>>() {
 				public Graph<Vertex, Edge>
 			      apply(GraphMetadata metadata) {
-				  return new DirectedSparseGraph<Vertex, Edge>();
+					if(metadata.getProperty("Target function").equals("Arithmetic Sum")){
+						return new Network(new ArithmeticSum());
+			    	}
+					else{
+						return new Network(null);
+					}
 		  };
 		};
 		
@@ -206,7 +224,7 @@ public class NetworkModel {
 		       (fileReader, graphFunction, vertexFunction,
 		        edgeFunction, hyperEdgeFunction);
 		 this.setCurrent_file(graph_file);
-		 this.setCurrent_network(new Network(new ArithmeticSum(), (DirectedSparseGraph<Vertex, Edge>) graphReader.readGraph()));
+		 this.setCurrent_network((Network)graphReader.readGraph());
 	}
 
 	public void setCurrent_network(Network new_network) {

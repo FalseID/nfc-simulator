@@ -10,7 +10,7 @@
   <items>
     <AnchorPane pickOnBounds="false" prefHeight="498.0" prefWidth="149.0" scaleShape="false" SplitPane.resizableWithParent="false">
          <children>
-            <MenuBar layoutY="-3.0" prefHeight="28.0" prefWidth="135.0">
+            <MenuBar layoutX="-8.0" prefHeight="28.0" prefWidth="143.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -27,13 +27,36 @@
                 <Menu mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
-            <ToggleButton fx:id="picking_button" layoutY="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Picking Mode">
-               <toggleGroup>
-                  <ToggleGroup fx:id="mode_group" />
-               </toggleGroup>
-            </ToggleButton>
-            <ToggleButton fx:id="editing_button" layoutY="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Editing Mode" toggleGroup="$mode_group" />
-            <ToggleButton fx:id="transforming_button" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" selected="true" text="Transforming Mode" toggleGroup="$mode_group" />
+            <TabPane layoutY="25.0" prefHeight="476.0" prefWidth="135.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab closable="false" text="Graph">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="147.0" prefWidth="137.0">
+                           <children>
+                              <ToggleButton fx:id="picking_button" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Picking Mode">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="mode_group" />
+                                 </toggleGroup>
+                              </ToggleButton>
+                              <ToggleButton fx:id="editing_button" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Editing Mode" toggleGroup="$mode_group" />
+                              <ToggleButton fx:id="transforming_button" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" selected="true" text="Transforming Mode" toggleGroup="$mode_group" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab closable="false" text="Network">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ChoiceBox fx:id="choose_function_box" layoutY="27.0" prefHeight="25.0" prefWidth="135.0" />
+                              <Text layoutX="7.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target Function:" wrappingWidth="135.0" />
+                              <Button layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Compute" />
+                              <TextArea fx:id="text_console" layoutY="77.0" prefHeight="200.0" prefWidth="135.0" />
+                           </children></AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
          </children></AnchorPane>
     <AnchorPane fx:id="visual_pane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="598.0" prefWidth="518.0">
          <children>

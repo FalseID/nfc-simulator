@@ -8,18 +8,23 @@ import java.util.ResourceBundle;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
+import arc.core.functions.ArithmeticSum;
+import arc.core.functions.TargetFunction;
 import arc.model.NetworkModel;
-import arc.ui.VisualizationView;
+import arc.ui.visualization.VisualizationView;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
@@ -54,6 +59,12 @@ public class MainController implements Initializable{
 	private ToggleButton transforming_button;
 	@FXML //  fx:id="mode_group"
 	private ToggleGroup mode_group;
+	@FXML //  fx:id="choose_function_box"
+	private ChoiceBox<TargetFunction> choose_function_box;
+	@FXML //  fx:id="text_console"
+	private TextArea text_console;
+	
+	
 	
 
 	/**Runs once all injections are complete.
@@ -61,9 +72,13 @@ public class MainController implements Initializable{
 	 **/
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//Adding visual_controller's visualization view to our swing node.
-		update();
+		update_visual();
 		//Make visualization view listen to mainmodel.
 		mainmodel.addListener(visual_view);
+		//Adding items to choice box.
+		choose_function_box.setItems(FXCollections.observableArrayList(
+			    (TargetFunction)new ArithmeticSum()));
+		choose_function_box.getSelectionModel().selectFirst();
 		
 		
 		root_pane.widthProperty().addListener(new ChangeListener<Number>() {
@@ -89,7 +104,8 @@ public class MainController implements Initializable{
 
             public void handle(ActionEvent event) {
             	mainmodel.clear();
-            	update();
+            	choose_function_box.getSelectionModel().selectFirst();
+            	update_visual();
             }
         });
 		
@@ -131,7 +147,8 @@ public class MainController implements Initializable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            	update();
+            	loadChoice();
+            	update_visual();
             	
             	
             }
@@ -158,14 +175,21 @@ public class MainController implements Initializable{
             }
         });
 		
+		choose_function_box.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TargetFunction>() {
+            public void changed(ObservableValue ov, TargetFunction function, TargetFunction new_function) {
+            	mainmodel.getCurrent_network().setTargetFunction(new_function);
+            }
+        });
+		
 		
 	}
+	
+	
 	/**
-	 * Updates the swing node content and resets togglegroup selection.
+	 * Updates the swing node content and sets certain selections according to the model.
 	 */
-	public void update(){
+	public void update_visual(){
 		visual_node.setContent(visual_view.getVisualizationViewer());
-    	mode_group.selectToggle(transforming_button);
 	}
 	
 	private void saveWithChooser(){
@@ -191,6 +215,10 @@ public class MainController implements Initializable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void loadChoice(){
+		choose_function_box.getSelectionModel().select(mainmodel.getCurrent_network().getTargetFunction());
 	}
 	
 

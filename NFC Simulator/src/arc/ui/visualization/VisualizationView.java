@@ -1,4 +1,4 @@
-package arc.ui;
+package arc.ui.visualization;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
@@ -14,7 +14,6 @@ import arc.core.Sink;
 import arc.core.Source;
 import arc.core.Vertex;
 import arc.core.Edge;
-import arc.visualization.NetworkEditingMouse;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.Graph;
@@ -35,6 +34,7 @@ public class VisualizationView implements PropertyChangeListener {
 	private Layout<Vertex, Edge> layout;
 	private VisualizationViewer<Vertex, Edge> vv;
 	private NetworkEditingMouse modalMouse;
+	private Mode modalMouseMode;
 	/*
 	 * Following are required for edge and vertex creation. They are received from the model and should never change.
 	 */
@@ -50,11 +50,12 @@ public class VisualizationView implements PropertyChangeListener {
 		this.edgeFactory = edgeFactory;
 		this.sourceFactory = sourceFactory;
 		this.sinkFactory = sinkFactory;
+		this.modalMouseMode = Mode.TRANSFORMING;
 		initialize(network);
 	}
 	
 	public void initialize(Network network){
-		this.layout = new StaticLayout<Vertex, Edge>(network.getGraph(), new Function<Vertex, Point2D>(){
+		this.layout = new StaticLayout<Vertex, Edge>(network, new Function<Vertex, Point2D>(){
 			//This layout has a Function for associating vertex coordinates with actual points on the graph.
 			public Point2D apply(Vertex v) {
 			       Point2D p = new Point2D.Double(v.getX(), v.getY());
@@ -80,9 +81,8 @@ public class VisualizationView implements PropertyChangeListener {
 				 this.edgeFactory,
 				 this.sourceFactory,
 				 this.sinkFactory);
-		this.modalMouse.setMode(Mode.TRANSFORMING);
+		this.modalMouse.setMode(this.modalMouseMode);
 		this.vv.setGraphMouse(this.modalMouse);
-		this.vv.addKeyListener(this.modalMouse.getModeKeyListener());
 	}
 	
 	public VisualizationViewer<Vertex, Edge> getVisualizationViewer(){
@@ -94,10 +94,11 @@ public class VisualizationView implements PropertyChangeListener {
 	 * @param network
 	 */
 	public void setGraph(Network network){
-		this.layout.setGraph((Graph)network.getGraph());
+		this.layout.setGraph((Graph)network);
 	}
 	
 	public void setModalMouseMode(Mode mode) {
+		this.modalMouseMode = mode;
 		this.modalMouse.setMode(mode);
 	}
 	
@@ -120,6 +121,14 @@ public class VisualizationView implements PropertyChangeListener {
         	initialize((Network)newNetwork);
 		}
 		
+	}
+
+	public NetworkEditingMouse getModalMouse() {
+		return modalMouse;
+	}
+
+	public Mode getModalMouseMode() {
+		return modalMouseMode;
 	}
 
 }

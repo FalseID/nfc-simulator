@@ -1,4 +1,4 @@
-package arc.functions;
+package arc.core.functions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,6 +31,11 @@ public class ArithmeticSum extends TargetFunction {
 			sum += s.getInput();
 		}
 		return sum;
+	}
+
+	@Override
+	public String toString() {
+		return "Arithmetic Sum";
 	}
 
 }

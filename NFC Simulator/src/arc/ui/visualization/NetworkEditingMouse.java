@@ -1,4 +1,4 @@
-package arc.visualization;
+package arc.ui.visualization;
 
 import java.awt.ItemSelectable;
 import java.awt.event.InputEvent;

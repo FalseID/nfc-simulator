@@ -1,4 +1,4 @@
-package arc.visualization;
+package arc.ui.visualization;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;

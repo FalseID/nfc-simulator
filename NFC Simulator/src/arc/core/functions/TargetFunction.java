@@ -1,4 +1,4 @@
-package arc.functions;
+package arc.core.functions;
 
 import java.util.ArrayList;
 import java.util.HashSet;

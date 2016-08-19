@@ -2,16 +2,20 @@ package arc.core;
 import java.util.HashSet;
 
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
-import arc.functions.TargetFunction;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
+import edu.uci.ics.jung.graph.Hypergraph;
+import arc.core.functions.TargetFunction;
 
-public class Network{
+public class Network extends DirectedSparseGraph<Vertex, Edge> implements Hypergraph<Vertex,Edge>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1423506516282698173L;
 	private TargetFunction targetFunction;
-	private DirectedSparseGraph<Vertex, Edge> graph;
     
-    public Network(TargetFunction targetFunction, DirectedSparseGraph<Vertex, Edge> graph){
+    public Network(TargetFunction targetFunction){
 	super();
 	this.targetFunction = targetFunction;
-	this.graph = graph;
     }
     
     public TargetFunction getTargetFunction() {
@@ -38,37 +42,27 @@ public class Network{
 	
 
     public HashSet<Source> getSources(){
-	HashSet<Source> sources = new HashSet<Source>();
-	for(Vertex vertex : this.graph.getVertices()){
-	    if(vertex instanceof Source){
-	    	sources.add((Source)vertex);
-	    }
-	}
+		HashSet<Source> sources = new HashSet<Source>();
+		for(Vertex vertex : this.getVertices()){
+		    if(vertex instanceof Source){
+		    	sources.add((Source)vertex);
+		    }
+		}
 	return sources;
     }
     
     public HashSet<Sink> getSinks(){
-	HashSet<Sink> sinks = new HashSet<Sink>();
-	for(Vertex vertex : this.graph.getVertices()){
-	    if(vertex instanceof Sink){
-	    	sinks.add((Sink)vertex);
-	    }
-	}
-	return sinks;
+		HashSet<Sink> sinks = new HashSet<Sink>();
+		for(Vertex vertex : this.getVertices()){
+		    if(vertex instanceof Sink){
+		    	sinks.add((Sink)vertex);
+		    }
+		}
+		return sinks;
     }
 
 	@Override
 	public String toString() {
-		return "Network [targetFunction=" + targetFunction + ", graph=" + graph
-				+ "]";
+		return "Network [targetFunction=" + targetFunction + "]";
 	}
-
-	public DirectedSparseGraph<Vertex, Edge> getGraph() {
-		return graph;
-	}
-
-	public void setGraph(DirectedSparseGraph<Vertex, Edge> graph) {
-		this.graph = graph;
-	}
-    
 }
