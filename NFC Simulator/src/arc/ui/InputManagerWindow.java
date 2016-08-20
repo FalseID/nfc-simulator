@@ -14,7 +14,7 @@ public class InputManagerWindow {
 			try {
 				FXMLLoader loader = new FXMLLoader(MainWindow.class.getResource("InputManagerView.fxml"));
 				this.root = loader.load();
-				((InputManagerController)loader.getController()).setParentController(controller);
+				((InputManagerController)loader.getController()).loadDynamicContent(controller);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

@@ -14,7 +14,7 @@ public class Sink extends Vertex {
     public Sink(){
     	int nextid = Sink.NextId.incrementAndGet();
     	this.id = nextid;
-    	this.label = "R"+this.id+":"+Integer.toString(this.input);
+    	this.label = "R"+this.id;
     }
     
     public static void resetNextId(){

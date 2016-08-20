@@ -1,8 +1,11 @@
 package arc.core;
 
+import arc.core.messages.Message;
+
 public class Edge {
     private int capacity;
     private String label;
+    private Message code;
     
     public String getLabel() {
 		return label;
@@ -27,6 +30,14 @@ public class Edge {
 	@Override
 	public String toString() {
 		return "";
+	}
+
+	public Message getCode() {
+		return code;
+	}
+
+	public void setCode(Message code) {
+		this.code = code;
 	}
     
     

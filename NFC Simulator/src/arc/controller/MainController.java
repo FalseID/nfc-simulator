@@ -3,12 +3,14 @@ package arc.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import arc.core.NetworkEncoder;
+import arc.core.Source;
 import arc.core.functions.ArithmeticSum;
 import arc.core.functions.TargetFunction;
 import arc.model.NetworkModel;
@@ -25,6 +27,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
@@ -39,7 +43,7 @@ import javafx.stage.Stage;
 
 public class MainController implements Initializable{
 	private NetworkModel mainmodel = new NetworkModel();
-	private final VisualizationView visual_view = new VisualizationView(mainmodel.getCurrent_network(),
+	private final VisualizationView visual_view = new VisualizationView(mainmodel.getNetwork(),
 			NetworkModel.getVertexFactory(), NetworkModel.getEdgeFactory(), 
 			NetworkModel.getSourceFactory(), NetworkModel.getSinkFactory());
 	@FXML
@@ -126,10 +130,10 @@ public class MainController implements Initializable{
 		
 		save_button.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            	if(mainmodel.getCurrent_file()==null){
+            	if(mainmodel.getFile()==null){
             		saveWithChooser();
             	}else{
-            		saveWithoutChooser(mainmodel.getCurrent_file());
+            		saveWithoutChooser(mainmodel.getFile());
             	}
             	
             }
@@ -190,13 +194,13 @@ public class MainController implements Initializable{
 		
 		choose_function_box.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TargetFunction>() {
             public void changed(ObservableValue ov, TargetFunction function, TargetFunction new_function) {
-            	mainmodel.getCurrent_network().setTargetFunction(new_function);
+            	mainmodel.getNetwork().setTargetFunction(new_function);
             }
         });
 		
 		compute_button.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            	String results = NetworkEncoder.encode(mainmodel.getCurrent_network());
+            	String results = NetworkEncoder.encode(mainmodel.getNetwork());
             	text_area.clear();
             	text_area.setText(results);
             }
@@ -245,22 +249,31 @@ public class MainController implements Initializable{
 	}
 	
 	private void loadChoice(){
-		choose_function_box.getSelectionModel().select(mainmodel.getCurrent_network().getTargetFunction());
+		choose_function_box.getSelectionModel().select(mainmodel.getNetwork().getTargetFunction());
 	}
 	
 	/*
 	 * Loads up a new input manager window window similarly to how we do it in the main class.
 	 */
 	private void loadInputManager(){
+		//If no source nodes exist then show an error message.
+		if(this.mainmodel.getNetwork().getSources().size() == 0){
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Missing Input Nodes!");
+			alert.setHeaderText("No source nodes were found.");
+			alert.setContentText("Network has no source nodes for inputs.");
+			alert.showAndWait();
+			return;
+		};
+		
 		//InputManager requires reference to this controller to access our model.
 		InputManagerWindow input_view = new InputManagerWindow(this);
 		Scene scene = new Scene(input_view.getRoot());
 		
-		
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 	    stage.setScene(scene);
-	    stage.setTitle("Input Manager");
+	    stage.setTitle("Edit inputs");
 	    stage.show();
 	}
 	

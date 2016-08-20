@@ -33,6 +33,8 @@ import arc.core.Sink;
 import arc.core.Source;
 import arc.core.Vertex;
 import arc.core.functions.ArithmeticSum;
+import arc.core.messages.IntegerMessage;
+import arc.core.messages.MessageType;
 import arc.ui.visualization.VisualizationView;
 
 
@@ -41,14 +43,15 @@ import arc.ui.visualization.VisualizationView;
  */
 public class NetworkModel {
 	private SwingPropertyChangeSupport propChange;
-	private Network current_network;
-	private File current_file; //This is for keeping track which file is currently open.
+	private Network network;
+	private File file; //This is for keeping track which file is currently open.
 	private static final GraphMLWriter<Vertex, Edge> graphWriter = new GraphMLWriter<Vertex, Edge>();
 	private static final Supplier <IntermediaryVertex> vertexFactory = new Supplier<IntermediaryVertex>() {
         public IntermediaryVertex get() {
             return new IntermediaryVertex();
         }
     };
+    
     /**
      * These suppliers provide methods for the controller/view hybrid VisualizationView 
      * to create its own elements of the graph with ModalMouse while updating our model here.
@@ -58,11 +61,13 @@ public class NetworkModel {
             return new Edge(1);
         }
     };
+    
     private static Supplier <Source> sourceFactory = new Supplier<Source>() {
         public Source get() {
-            return new Source(0);
+            return new Source(new IntegerMessage(0));
         }
     };
+    
     private static Supplier <Sink> sinkFactory = new Supplier<Sink>() {
         public Sink get() {
             return new Sink();
@@ -71,7 +76,7 @@ public class NetworkModel {
 	
 	public NetworkModel(){
 		super();
-	    this.current_network= new Network(new ArithmeticSum());
+	    this.network= new Network(new ArithmeticSum(), MessageType.INTEGER);
 	    this.propChange = new SwingPropertyChangeSupport(this);
 	}
 	
@@ -79,13 +84,13 @@ public class NetworkModel {
 	        propChange.addPropertyChangeListener(prop);
 	 }
 
-	public Network getCurrent_network() {
-		return current_network;
+	public Network getNetwork() {
+		return network;
 	}
 	
 	@Override
 	public String toString() {
-		return "MainModel [current_network=" + current_network + "]";
+		return "MainModel [network=" + network + "]";
 	}
 
 	public static Supplier<IntermediaryVertex> getVertexFactory() {
@@ -135,8 +140,8 @@ public class NetworkModel {
 			    }
 			);
 		
-		graphWriter.save(this.current_network, out);
-		this.setCurrent_file(graph_file);
+		graphWriter.save(this.network, out);
+		this.setFile(graph_file);
 		
 	}
 	/**
@@ -148,7 +153,7 @@ public class NetworkModel {
 		IntermediaryVertex.resetNextId();
 		Source.resetNextId();
 		Sink.resetNextId();
-		this.setCurrent_network(new Network(new ArithmeticSum()));
+		this.setNetwork(new Network(new ArithmeticSum(), MessageType.INTEGER));
 		
 	}
 	public void load(File graph_file, final AbstractLayout layout) throws IOException, GraphIOException {
@@ -166,10 +171,10 @@ public class NetworkModel {
 				public Graph<Vertex, Edge>
 			      apply(GraphMetadata metadata) {
 					if(metadata.getProperty("Target function").equals("Arithmetic Sum")){
-						return new Network(new ArithmeticSum());
+						return new Network(new ArithmeticSum(), MessageType.INTEGER);
 			    	}
 					else{
-						return new Network(null);
+						return new Network(null, MessageType.INTEGER);
 					}
 		  };
 		};
@@ -223,22 +228,22 @@ public class NetworkModel {
 		 GraphMLReader2<Graph<Vertex, Edge>, Vertex, Edge>
 		       (fileReader, graphFunction, vertexFunction,
 		        edgeFunction, hyperEdgeFunction);
-		 this.setCurrent_file(graph_file);
-		 this.setCurrent_network((Network)graphReader.readGraph());
+		 this.setFile(graph_file);
+		 this.setNetwork((Network)graphReader.readGraph());
 	}
 
-	public void setCurrent_network(Network new_network) {
+	public void setNetwork(Network new_network) {
 		//Notify listeners that network has changed.
-		propChange.firePropertyChange("network", this.current_network, new_network);
-		this.current_network = new_network;
+		propChange.firePropertyChange("network", this.network, new_network);
+		this.network = new_network;
 	}
 
-	public File getCurrent_file() {
-		return current_file;
+	public File getFile() {
+		return file;
 	}
 
-	public void setCurrent_file(File current_file) {
-		this.current_file = current_file;
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 	public static Supplier<Source> getSourceFactory() {

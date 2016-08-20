@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import arc.core.Source;
+import arc.core.messages.Message;
+import arc.core.messages.MessageType;
 
 public abstract class TargetFunction {
 	
@@ -16,13 +18,5 @@ public abstract class TargetFunction {
 	 * @param integers
 	 * @return
 	 */
-	public abstract int compute(ArrayList<Integer> integers);
-	/**
-	 * This is for computing the correct result of a function. This represents the global result that must be correct and 
-	 * as such is used for checking if network function computation was successful.
-	 * @param sources
-	 * @return
-	 */
-	public abstract int direct_compute(HashSet<Source> sources);
-	
+	public abstract Message compute(ArrayList<Message> messages, MessageType type);
 }

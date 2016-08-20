@@ -2,6 +2,8 @@ package arc.core;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import arc.core.messages.Message;
+
 /**
  * Vertex for intermediary nodes in the graph and the basis of the source and sink nodes. 
  * Normal vertices however, do not have an initial input value but receive it from source nodes.
@@ -12,7 +14,6 @@ public class IntermediaryVertex extends Vertex{
 	protected static AtomicInteger NextId = new AtomicInteger();
 	protected int id;
     protected String label;
-    private int input;
 	
 	public IntermediaryVertex(){
 		int nextid = IntermediaryVertex.NextId.incrementAndGet();
@@ -25,11 +26,11 @@ public class IntermediaryVertex extends Vertex{
 		this.id = IntermediaryVertex.NextId.incrementAndGet();
     }
     
-    public int getInput() {
+    public Message getInput() {
 		return input;
 	}
 
-	public void setInput(int input) {
+	public void setInput(Message input) {
 		this.input = input;
 	}
     

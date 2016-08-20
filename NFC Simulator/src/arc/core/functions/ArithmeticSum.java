@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import arc.core.Source;
+import arc.core.messages.IntegerMessage;
+import arc.core.messages.Message;
+import arc.core.messages.MessageType;
 
 /***
  * A self-explanatory function that simply computes the sum of its arguments.
@@ -17,20 +20,15 @@ public class ArithmeticSum extends TargetFunction {
 		super();
 	}
 	
-	public int compute(ArrayList<Integer> integers) {
-		int sum = 0;
-		for (int a :integers){
-			sum+=a;
+	public Message compute(ArrayList<Message> messages, MessageType type) {
+		if(type == MessageType.INTEGER){
+			int sum = 0;
+			for (Message msg :messages){
+				sum += ((IntegerMessage)msg).getMessage();
+			}
+			return new IntegerMessage(sum);
 		}
-		return sum;
-	}
-
-	public int direct_compute(HashSet<Source> sources) {
-		int sum = 0;
-		for (Source s : sources){
-			sum += s.getInput();
-		}
-		return sum;
+		return null;
 	}
 
 	@Override
