@@ -12,6 +12,7 @@ import arc.core.NetworkEncoder;
 import arc.core.functions.ArithmeticSum;
 import arc.core.functions.TargetFunction;
 import arc.model.NetworkModel;
+import arc.ui.InputManagerWindow;
 import arc.ui.visualization.VisualizationView;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -21,7 +22,9 @@ import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
@@ -31,9 +34,11 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class MainController implements Initializable{
-	private final NetworkModel mainmodel = new NetworkModel();
+	private NetworkModel mainmodel = new NetworkModel();
 	private final VisualizationView visual_view = new VisualizationView(mainmodel.getCurrent_network(),
 			NetworkModel.getVertexFactory(), NetworkModel.getEdgeFactory(), 
 			NetworkModel.getSourceFactory(), NetworkModel.getSinkFactory());
@@ -51,8 +56,10 @@ public class MainController implements Initializable{
 	private MenuItem save_as_button;
 	@FXML //  fx:id="load_button"
 	private MenuItem load_button;
-	@FXML //  fx:id="clear_button"
-	private MenuItem clear_button;
+	@FXML //  fx:id="clear_item"
+	private MenuItem clear_item;
+	@FXML //  fx:id="input_manager_item"
+	private MenuItem input_manager_item;
 	@FXML //  fx:id="picking_button"
 	private ToggleButton picking_button;
 	@FXML //  fx:id="editing_button"
@@ -67,6 +74,8 @@ public class MainController implements Initializable{
 	private TextArea text_area;
 	@FXML //  fx:id="compute_button"
 	private Button compute_button;
+	@FXML //  fx:id="input_manager_button"
+	private Button input_manager_button;
 	
 	/**Runs once all injections are complete.
 	 * Initalizes the main model.
@@ -101,10 +110,17 @@ public class MainController implements Initializable{
             }
         });
 		
-		clear_button.setOnAction(new EventHandler<ActionEvent>() {
+		clear_item.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
             	clearAll();
+            }
+        });
+		
+		input_manager_item.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+            	loadInputManager();
             }
         });
 		
@@ -186,6 +202,12 @@ public class MainController implements Initializable{
             }
         });
 		
+		input_manager_button.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+            	loadInputManager();
+            }
+        });
+		
 		
 	}
 	
@@ -226,7 +248,24 @@ public class MainController implements Initializable{
 		choose_function_box.getSelectionModel().select(mainmodel.getCurrent_network().getTargetFunction());
 	}
 	
+	/*
+	 * Loads up a new input manager window window similarly to how we do it in the main class.
+	 */
+	private void loadInputManager(){
+		//InputManager requires reference to this controller to access our model.
+		InputManagerWindow input_view = new InputManagerWindow(this);
+		Scene scene = new Scene(input_view.getRoot());
+		
+		
+		Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+	    stage.setScene(scene);
+	    stage.setTitle("Input Manager");
+	    stage.show();
+	}
+	
 	private void clearAll(){
+		text_area.clear();
 		mainmodel.clear();
     	loadChoice();
     	update_visual();
@@ -238,6 +277,11 @@ public class MainController implements Initializable{
 
 	public void setVisual_pane(AnchorPane visual_pane) {
 		this.visual_pane = visual_pane;
+	}
+
+
+	public NetworkModel getMainmodel() {
+		return mainmodel;
 	}
 
 }

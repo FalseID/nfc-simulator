@@ -6,11 +6,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<SplitPane fx:id="root_pane" dividerPositions="0.19899665551839466" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="400.0" prefHeight="500.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arc.controller.MainController">
+<SplitPane fx:id="root_pane" dividerPositions="0.22347266881028938" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="400.0" prefHeight="500.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arc.controller.MainController" >
   <items>
-    <AnchorPane pickOnBounds="false" prefHeight="498.0" prefWidth="149.0" scaleShape="false" SplitPane.resizableWithParent="false">
+    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" pickOnBounds="false" prefHeight="498.0" prefWidth="136.0" scaleShape="false">
          <children>
-            <MenuBar layoutX="-8.0" prefHeight="28.0" prefWidth="143.0">
+            <MenuBar layoutX="-8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="143.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -22,16 +22,17 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                      <items>
-                        <MenuItem fx:id="clear_button" mnemonicParsing="false" text="Clear" />
+                        <MenuItem fx:id="input_manager_item" mnemonicParsing="false" text="Open Input Manager" />
+                        <MenuItem fx:id="clear_item" mnemonicParsing="false" text="Clear" />
                      </items></Menu>
                 <Menu mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
-            <TabPane layoutY="25.0" prefHeight="476.0" prefWidth="135.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane layoutY="25.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="476.0" prefWidth="135.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab closable="false" text="Graph">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="147.0" prefWidth="137.0">
+                    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="447.0" prefWidth="136.0">
                            <children>
                               <ToggleButton fx:id="picking_button" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Picking Mode">
                                  <toggleGroup>
@@ -50,8 +51,9 @@
                            <children>
                               <ChoiceBox fx:id="choose_function_box" layoutY="27.0" prefHeight="25.0" prefWidth="135.0" />
                               <Text layoutX="7.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target Function:" wrappingWidth="135.0" />
-                              <Button fx:id="compute_button" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Compute" />
-                              <TextArea fx:id="text_area" editable="false" layoutY="77.0" prefHeight="200.0" prefWidth="135.0" />
+                              <Button fx:id="compute_button" layoutY="77.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Compute" />
+                              <TextArea fx:id="text_area" editable="false" layoutY="100.0" prefHeight="224.0" prefWidth="135.0" />
+                              <Button fx:id="input_manager_button" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Input Manager" />
                            </children></AnchorPane>
                   </content>
                 </Tab>

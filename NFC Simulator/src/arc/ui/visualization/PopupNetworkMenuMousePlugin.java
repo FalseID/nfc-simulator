@@ -1,12 +1,17 @@
 package arc.ui.visualization;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.JDialog;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import arc.core.Edge;
@@ -66,32 +71,17 @@ public class PopupNetworkMenuMousePlugin extends AbstractPopupGraphMousePlugin {
 	            if(vertex != null) {
 	            	Set<Vertex> picked = pickedVertexState.getPicked();
 	            	if(picked.size() > 0) {
-	            		if(graph instanceof UndirectedGraph == false) {
-	            			JMenu directedMenu = new JMenu("Create Directed Edge");
-	            			popup.add(directedMenu);
-	            			for(final Vertex other : picked) {
-	            				directedMenu.add(new AbstractAction("["+other+","+vertex+"]") {
-	            					public void actionPerformed(ActionEvent e) {
-	            						graph.addEdge(edgeFactory.get(),
-	            								other, vertex, EdgeType.DIRECTED);
-	            						vv.repaint();
-	            					}
-	            				});
-	            			}
-	            		}
-	            		if(graph instanceof DirectedGraph == false) {
-	            			JMenu undirectedMenu = new JMenu("Create Undirected Edge");
-	            			popup.add(undirectedMenu);
-	            			for(final Vertex other : picked) {
-	            				undirectedMenu.add(new AbstractAction("[" + other+","+vertex+"]") {
-	            					public void actionPerformed(ActionEvent e) {
-	            						graph.addEdge(edgeFactory.get(),
-	            								other, vertex);
-	            						vv.repaint();
-	            					}
-	            				});
-	            			}
-	            		}
+            			JMenu directedMenu = new JMenu("Create Directed Edge");
+            			popup.add(directedMenu);
+            			for(final Vertex other : picked) {
+            				directedMenu.add(new AbstractAction("["+other+","+vertex+"]") {
+            					public void actionPerformed(ActionEvent e) {
+            						graph.addEdge(edgeFactory.get(),
+            								other, vertex, EdgeType.DIRECTED);
+            						vv.repaint();
+            					}
+            				});
+            			}
 	                }
 	                popup.add(new AbstractAction("Delete Vertex") {
 	                    public void actionPerformed(ActionEvent e) {

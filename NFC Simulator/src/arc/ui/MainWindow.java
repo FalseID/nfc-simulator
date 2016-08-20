@@ -11,7 +11,7 @@ public class MainWindow {
 	
 	public MainWindow(){
 		try {
-			this.root = FXMLLoader.load(MainWindow.class.getResource("MainWindow.fxml"));
+			this.root = FXMLLoader.load(MainWindow.class.getResource("MainView.fxml"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
